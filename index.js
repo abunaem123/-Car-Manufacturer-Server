@@ -19,6 +19,8 @@ async function run (){
         await client.connect()
     const productCollection =client.db("car").collection("manufacturee");
 
+    const userCollection = client.db('car').collection('users');
+
     app.get('/product', async(req,res) =>{
         const query={};
         const cursor =productCollection.find(query);
@@ -32,9 +34,50 @@ async function run (){
         const product = await productCollection.findOne(query);
         res.send(product);
     })
+    // Add New Items 
+    app.post('/addmyitem', async (req, res) => {
+        const newitem = req.body;
+        const result = await productCollection.insertOne(newitem);
+        res.send(result);
+    });
+
+     //load all  user
+     app.get('/user', verifyJWT, async (req, res) => {
+        const users = await userCollection.find().toArray();
+        res.send(users);
+    });
 
 
+    //user info save krbo database e
 
+    app.put('/user/:email', async (req, res) => {
+        const email = req.params.email;
+        const user = req.body;
+        const filter = { email: email };
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: user,
+        };
+        const result = await userCollection.updateOne(filter, updateDoc, options);
+        const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        res.send({ result, token });
+    })
+
+
+    function verifyJWT(req, res, next) {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).send({ message: 'UnAuthorized access' });
+        }
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+            if (err) {
+                return res.status(403).send({ message: 'Forbidden access' })
+            }
+            req.decoded = decoded;
+            next();
+        });
+    }
     }
     finally{
 
