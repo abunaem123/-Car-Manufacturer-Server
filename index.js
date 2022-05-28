@@ -49,7 +49,7 @@ async function run (){
     });
 
 
-    //user info save krbo database e
+    // user information connect database 
 
     app.put('/user/:email', async (req, res) => {
         const email = req.params.email;
@@ -91,5 +91,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, ()=> {
-    console.log('Abu Naem listening on port ${port}');
+    console.log('Car Manufacturer listening on port ${port}');
 });
