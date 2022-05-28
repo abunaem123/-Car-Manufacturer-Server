@@ -97,6 +97,9 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('running Car Manufacturer server');
 });
+app.get('/', (req, res) => {
+    res.send('running Car Manufacturer server');
+});
 
 app.listen(port, ()=> {
     console.log('Car Manufacturer listening on port ${port}');
