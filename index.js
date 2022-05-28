@@ -40,6 +40,12 @@ async function run (){
         const result = await productCollection.insertOne(newitem);
         res.send(result);
     });
+    app.delete('/product/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const product = await productCollection.deleteOne(query);
+        res.send(product)
+    });
 
     
      //load all  user
@@ -62,7 +68,7 @@ async function run (){
         const result = await userCollection.updateOne(filter, updateDoc, options);
         const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
         res.send({ result, token });
-    })
+    });
 
 
     function verifyJWT(req, res, next) {
@@ -78,6 +84,7 @@ async function run (){
             req.decoded = decoded;
             next();
         });
+        
     }
     }
     finally{
@@ -87,7 +94,7 @@ async function run (){
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('running warehouse server');
+    res.send('running Car Manufacturer server');
 });
 
 app.listen(port, ()=> {
