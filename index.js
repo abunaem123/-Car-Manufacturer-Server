@@ -40,6 +40,7 @@ async function run (){
         const result = await productCollection.insertOne(newitem);
         res.send(result);
     });
+    // Delete products 
     app.delete('/product/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
