@@ -1,14 +1,15 @@
+
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-require('dotenv').config();
+
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 const app = express();
 
 const corsConfig = {
-    origin:' https://car-manufacturer-dd339.web.app',
-    credentials: true,
+    origin:'https://car-manufacturer-dd339.web.app',
   }
   app.use(cors(corsConfig))
 app.use(express.json());
