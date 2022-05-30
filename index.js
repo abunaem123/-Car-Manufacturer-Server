@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 const app = express();
 
-app.use(cors({ origin : "https://car-manufacturer-dd339.web.app/"  }))
+const corsConfig = {
+    origin:' https://car-manufacturer-dd339.web.app',
+    credentials: true,
+  }
+  app.use(cors(corsConfig))
 app.use(express.json());
 
 
