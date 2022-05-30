@@ -19,6 +19,9 @@ async function run (){
         await client.connect()
     const productCollection =client.db("car").collection("manufacturee");
     const userCollection = client.db('car').collection('users');
+    const reviewCollection = client
+      .db("car")
+      .collection("reviews");
 
     function verifyJWT(req, res, next) {
         const authHeader = req.headers.authorization;
@@ -35,6 +38,21 @@ async function run (){
         });
         
     }
+
+    // get all reviews
+    app.get("/review", async (req, res) => {
+        const query = {};
+        const cursor = reviewCollection.find(query);
+        const reviews = await cursor.toArray();
+        res.send(reviews);
+    });
+
+    //add review
+    app.post('/review', async (req, res) => {
+      const newreview = req.body;
+      const result = await reviewCollection.insertOne(newreview);
+      res.send(result);
+  });
 
 
     app.get('/product', async(req,res) =>{
@@ -67,12 +85,12 @@ async function run (){
     
      //load all  user
     //  app.get('/user', verifyJWT, async (req, res) => {
-     app.get('/user', async (req, res) => {
+     app.get('/user', verifyJWT,async (req, res) => {
         const users = await userCollection.find().toArray();
         res.send(users);
     });
 
-    app.put('/user/admin/:email', verifyJWT,async (req, res) => {
+    app.put('/user/admin/:email',verifyJWT,async (req, res) => {
         const email = req.params.email;
         const requester = req.decoded.email;
         const requesterAccount = await userCollection.findOne({email: requester})
